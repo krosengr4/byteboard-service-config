@@ -1,0 +1,9 @@
+image:
+  tag: latest
+
+config:
+  dbHost: "host.k3s.internal"
+  dbPort: "5432"
+  dbUser: "postgres"
+  dbName: "byteboard_db"
+  port: "8080"
