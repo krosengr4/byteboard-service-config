@@ -12,5 +12,4 @@ data:
   POSTGRES_SSL_MODE: {{ .Values.config.postgressSSLMode | quote }}
   SECRETS_PATH: "/secrets"
   POSTGRES_PASSWORD_FILE: "/secrets/db-password"
-  JWT_SECRET_FILE: "/secrets/jwt-secret"
   PORT: {{ .Values.config.port | quote }}
