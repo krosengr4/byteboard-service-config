@@ -4,35 +4,31 @@ pipeline {
     environment {
         PI_HOST = 'rosenpi.local'
         PI_USER = 'krosengren'
-        CHART_PATH = 'chart'
-        ENV_VALUES = 'environments/rosenpi/values.yaml'
-        RELEASE_NAME = 'byteboard-service'
-        NAMESPACE = 'default'
     }
 
     stages {
         stage('Deploy to K3s') {
             steps {
-                echo 'Deploying byteboard-service to K3s with Helm...'
+                echo 'Deploying byteboard-service to K3s...'
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'rosenpi-ssh',
                     keyFileVariable: 'SSH_KEY'
                 )]) {
                     sh '''
-                        # Copy chart and environment values to Pi
-                        scp -i $SSH_KEY -o StrictHostKeyChecking=no -r ${CHART_PATH} ${PI_USER}@${PI_HOST}:~/byteboard-service-chart
-                        scp -i $SSH_KEY -o StrictHostKeyChecking=no ${ENV_VALUES} ${PI_USER}@${PI_HOST}:~/byteboard-service-chart/env-values.yaml
+                        scp -i $SSH_KEY -o StrictHostKeyChecking=no -r k8s ${PI_USER}@${PI_HOST}:~/byteboard-service-k8s
+                        scp -i $SSH_KEY -o StrictHostKeyChecking=no .env ${PI_USER}@${PI_HOST}:~/byteboard-service-k8s/
 
-                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no ${PI_USER}@${PI_HOST} << 'ENDSSH'
-                            cd ~/byteboard-service-chart
-                            helm upgrade --install byteboard-service . \
-                                -f values.yaml \
-                                -f env-values.yaml \
-                                --namespace default \
-                                --wait \
-                                --timeout 120s
+                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no ${PI_USER}@${PI_HOST} '
+                            cd ~/byteboard-service-k8s
+                            export $(cat .env | xargs)
+
+                            for file in k8s/*.yaml; do
+                                envsubst < "$file" | kubectl apply -f -
+                            done
+
+                            kubectl rollout status deployment/byteboard-service --timeout=60s
                             kubectl get pods -l app=byteboard-service
-ENDSSH
+                        '
                     '''
                 }
             }
@@ -40,7 +36,7 @@ ENDSSH
     }
 
     post {
-        success { echo 'Helm deployment successful!' }
-        failure { echo 'Helm deployment failed!' }
+        success { echo 'Deployment successful!' }
+        failure { echo 'Deployment failed!' }
     }
 }

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: byteboard-service
+  labels:
+    app: byteboard-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: byteboard-service
+  template:
+    metadata:
+      labels:
+        app: byteboard-service
+    spec:
+      containers:
+        - name: byteboard-service
+          image: ${DOCKER_IMAGE}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: byteboard-service-config
+            - secretRef:
+                name: byteboard-service-secrets
+          volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+      volumes:
+        - name: secrets
+          secret:
+            secretName: byteboard-service-secrets
+            items:
+              - key: DB_PASSWORD
+                path: db-password

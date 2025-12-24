@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: byteboard-service-config
+  labels:
+    app: byteboard-service
+data:
+  POSTGRES_HOST: "${POSTGRES_HOST}"
+  POSTGRES_PORT: "${POSTGRES_PORT}"
+  POSTGRES_DB: "${POSTGRES_DB}"
+  POSTGRES_USER: "${POSTGRES_USER}"
+  POSTGRES_SSL_MODE: "${POSTGRES_SSL_MODE}"
+  SECRETS_PATH: "/secrets"
+  POSTGRES_PASSWORD_FILE: "/secrets/db-password"
+  PORT: "${PORT}"
