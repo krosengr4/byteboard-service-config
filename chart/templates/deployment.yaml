@@ -23,7 +23,18 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.nameOverride }}-config
-            - secretRef:
-                name: {{ .Values.nameOverride }}-secrets
+          volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: secrets
+          secret:
+            secretName: {{ .Values.nameOverride }}-secrets
+            items:
+              - key: DB_PASSWORD
+                path: db-password
+              - key: JWT_SECRET
+                path: jwt-secret

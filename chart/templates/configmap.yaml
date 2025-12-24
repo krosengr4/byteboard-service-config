@@ -5,8 +5,12 @@ metadata:
   labels:
     app: {{ .Values.nameOverride }}
 data:
-  DB_HOST: {{ .Values.config.dbHost | quote }}
-  DB_PORT: {{ .Values.config.dbPort | quote }}
-  DB_USER: {{ .Values.config.dbUser | quote }}
-  DB_NAME: {{ .Values.config.dbName | quote }}
+  POSTGRES_HOST: {{ .Values.config.postgresHost | quote }}
+  POSTGRES_PORT: {{ .Values.config.postgresPort | quote }}
+  POSTGRES_DB: {{ .Values.config.postgresDB | quote }}
+  POSTGRES_USER: {{ .Values.config.postgresUser | quote }}
+  POSTGRES_SSL_MODE: {{ .Values.config.postgressSSLMode | quote }}
+  SECRETS_PATH: "/secrets"
+  POSTGRES_PASSWORD_FILE: "/secrets/db-password"
+  JWT_SECRET_FILE: "/secrets/jwt-secret"
   PORT: {{ .Values.config.port | quote }}

@@ -32,7 +32,7 @@ pipeline {
                                 --wait \
                                 --timeout 120s
                             kubectl get pods -l app=byteboard-service
-                        ENDSSH
+ENDSSH
                     '''
                 }
             }

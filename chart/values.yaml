@@ -16,8 +16,9 @@ resources:
     cpu: "500m"
 
 config:
-  dbHost: "localhost"
-  dbPort: "5432"
-  dbUser: "postgres"
-  dbName: "byteboard_db"
+  postgresHost: "localhost"
+  postgresPort: "5432"
+  postgresDB: "byteboard_db"
+  postgresUser: "postgres"
+  postgressSSLMode: "disable"
   port: "8080"
