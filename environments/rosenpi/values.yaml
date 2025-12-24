@@ -2,7 +2,7 @@ image:
   tag: latest
 
 config:
-  dbHost: "host.k3s.internal"
+  dbHost: "postgres"
   dbPort: "5432"
   dbUser: "postgres"
   dbName: "byteboard_db"
